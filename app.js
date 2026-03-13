@@ -654,11 +654,11 @@ async function loadAdminTab(tab, btn = null) {
             const classes = [...new Set(adminUsersCache.map(u => u.className).filter(c => c && c !== "---"))].sort();
             let classOptions = '<option value="all">Tất cả các lớp</option>';
             classes.forEach(c => {
-                classOptions += `< option value = "${c}" > ${c}</option > `;
+                classOptions += `<option value="${c}">${c}</option>`;
             });
 
             let html = `
-                        < div id = "user-mgmt-header" style = "grid-column: 1 / -1; display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;" >
+                        <div id="user-mgmt-header" style="grid-column: 1 / -1; display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                         <h3 class="section-title" style="margin:0;"><i class="fa-solid fa-users-gear"></i> QUẢN LÝ NGƯỜI DÙNG</h3>
                         <div class="user-management-controls section-card" style="margin:0; display:flex; gap:15px; align-items:center; background:#f0f9ff; border:1px solid #bae6fd; padding: 10px 20px; width: auto; border-radius: 12px; flex-wrap: wrap;">
                             <div style="display:flex; align-items:center; gap:8px;">
@@ -685,7 +685,7 @@ async function loadAdminTab(tab, btn = null) {
                                 <i class="fa-solid fa-file-excel"></i> Xuất Excel
                             </button>
                         </div>
-                    </div >
+                    </div>
                         <div id="admin-users-list-container" style="grid-column: 1 / -1; width: 100%;"></div>
                     `;
             area.innerHTML = html;
@@ -827,16 +827,16 @@ function openAdminChatReply(id, username) {
         userChats.forEach(c => {
             // Tin nhắn của học sinh
             chatHistoryContainer.innerHTML += `
-                        < div class="chat-message user-msg" >
+                        <div class="chat-message user-msg">
                             <div class="msg-bubble">${c.content}</div>
-                </div >
+                </div>
                         `;
             // Phản hồi của Admin (nếu có)
             if (c.details) {
                 chatHistoryContainer.innerHTML += `
-                        < div class="chat-message admin-msg" >
+                        <div class="chat-message admin-msg">
                             <div class="msg-bubble" style="background: var(--primary); color:white;">${c.details}</div>
-                    </div >
+                    </div>
                         `;
             }
         });
@@ -1080,19 +1080,19 @@ function renderNews(newsList) {
             const dateStr = new Date(n.time).toLocaleDateString('vi-VN');
             let contentHtml = '';
             if (n.type === 'Link' || n.type === 'PDF') {
-                contentHtml = `< a href = "${n.content}" target = "_blank" class="btn btn-outline" style = "padding: 5px 10px; font-size: 12px; margin-top: 5px; display: inline-block;" > Xem chi tiết < i class="fa-solid fa-chevron-right" ></i ></a > `;
+                contentHtml = `<a href="${n.content}" target="_blank" class="btn btn-outline" style="padding: 5px 10px; font-size: 12px; margin-top: 5px; display: inline-block;">Xem chi tiết <i class="fa-solid fa-chevron-right"></i></a>`;
             } else {
-                contentHtml = `< p style = "font-size: 13px; color: var(--text-muted); margin-top: 5px;" > ${n.content}</p > `;
+                contentHtml = `<p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">${n.content}</p>`;
             }
             html += `
-                        < div style = "background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);" >
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                         <h4 style="color: var(--c-blue); font-size: 15px;">${n.title}</h4>
                         <span style="font-size: 11px; color: var(--text-muted); padding: 2px 5px; background: rgba(0,0,0,0.3); border-radius: 5px;">${n.type}</span>
                     </div>
                     <small style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; display: block;">${dateStr}</small>
                     ${contentHtml}
-                </div >
+                </div>
                         `;
         });
     }
@@ -1136,7 +1136,7 @@ function renderAdminUsers() {
     }
 
     let html = `
-                        < div style = "overflow-x:auto; width: 100%;" >
+                        <div style="overflow-x:auto; width: 100%;">
                             <table style="width:100%; border-collapse: collapse; background:white; border-radius:15px; overflow:hidden; table-layout: auto;">
                                 <thead>
                                     <tr style="background:#f1f5f9; text-align:left;">
@@ -1178,7 +1178,7 @@ function renderAdminUsers() {
                                     `;
     });
 
-    html += `</tbody></table></div > `;
+    html += `</tbody></table></div>`;
     listContainer.innerHTML = html;
 }
 
@@ -1241,7 +1241,7 @@ function exportUsersToExcel() {
 // --- Bulk User Management Functions ---
 function renderBulkUserManagement(container) {
     container.innerHTML = `
-                        < div class="bulk-user-mgmt" >
+                        <div class="bulk-user-mgmt">
             <h3 class="section-title"><i class="fa-solid fa-file-import"></i> THÊM TÀI KHOẢN ĐĂNG KÝ HÀNG LOẠT</h3>
             
             <div class="section-card" style="background: #f8fafc; border: 1px dashed var(--primary); text-align: center; padding: 40px 20px;">
@@ -1277,7 +1277,7 @@ function renderBulkUserManagement(container) {
                     <li>Cột SĐT trong file mẫu (Cột F) sẽ được tự động đồng bộ vào hệ thống.</li>
                 </ul>
             </div>
-        </div >
+        </div>
                         `;
 }
 
