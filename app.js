@@ -1411,3 +1411,52 @@ function urlBase64ToUint8Array(base64String) {
     }
     return outputArray;
 }
+
+// --- Own Password Management for Teacher/Admin ---
+function openOwnPasswordModal() {
+    document.getElementById('own-new-pass').value = '';
+    document.getElementById('own-confirm-pass').value = '';
+    openModal('own-password-modal');
+}
+
+async function submitOwnPasswordChange() {
+    const newPass = document.getElementById('own-new-pass').value.trim();
+    const confirmPass = document.getElementById('own-confirm-pass').value.trim();
+
+    if (!newPass) {
+        showToast("Vui lòng nhập mật khẩu mới!", "error");
+        return;
+    }
+
+    if (newPass.length < 4) {
+        showToast("Mật khẩu mới phải có ít nhất 4 ký tự!", "error");
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        showToast("Xác nhận mật khẩu không khớp!", "error");
+        return;
+    }
+
+    customConfirm("Bạn có chắc chắn muốn đổi sang mật khẩu mới này không?", async () => {
+        showLoader();
+        try {
+            const res = await apiCall({
+                action: 'changePassword',
+                username: currentUser,
+                newPassword: newPass
+            });
+            hideLoader();
+
+            if (res && res.success) {
+                showToast("Đã đổi mật khẩu thành công! Hãy ghi nhớ mật khẩu mới.", "success");
+                closeModal('own-password-modal');
+            } else {
+                showToast(res && res.message ? res.message : "Lỗi khi đổi mật khẩu!", "error");
+            }
+        } catch (err) {
+            hideLoader();
+            showToast("Lỗi kết nối máy chủ!", "error");
+        }
+    });
+}

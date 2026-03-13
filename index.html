@@ -220,6 +220,13 @@
                         <span>THÊM TÀI KHOẢN ĐĂNG KÝ</span>
                         <i class="fa-solid fa-chevron-right arrow"></i>
                     </div>
+                    <div class="admin-menu-item" onclick="openOwnPasswordModal()">
+                        <div class="icon-wrap" style="background: var(--c-yellow);"><i class="fa-solid fa-key"></i>
+                        </div>
+                        <span>ĐỔI MẬT KHẨU CỦA BẠN</span>
+                        <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
+
                     <div class="admin-menu-item" onclick="loadAdminTab('stats')"
                         style="border-top: 2px solid #eee; margin-top: 10px; padding-top: 15px;">
                         <div class="icon-wrap" style="background: var(--text-main);"><i
@@ -599,6 +606,55 @@
                     <button class="btn btn-primary" style="margin-top: 15px; border-radius: 12px;"
                         onclick="submitChangePassword()">
                         <i class="fa-solid fa-check"></i> Cập nhật mật khẩu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Own Password Modal -->
+        <div id="own-password-modal" class="modal"
+            style="background: rgba(0,0,0,0.6); align-items: center; justify-content: center;">
+            <div class="modal-content"
+                style="background: white; width: 90%; max-width: 350px; border-radius: 24px; height: auto; align-self: center; margin: auto; padding: 10px;">
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                    <h3 style="display: flex; align-items: center; gap: 10px; color: var(--primary); margin: 0;">
+                        <i class="fa-solid fa-key"></i> Đổi mật khẩu mới
+                    </h3>
+                    <button class="close-btn" onclick="closeModal('own-password-modal')"
+                        style="background: #f1f5f9; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding: 20px 10px;">
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+                        Nhập mật khẩu mới bên dưới. Mật khẩu sẽ được cập nhật trực tiếp vào hệ thống quản lý.
+                    </p>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label
+                            style="font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: block;">MẬT
+                            KHẨU MỚI</label>
+                        <div style="position: relative;">
+                            <input type="password" id="own-new-pass" placeholder="Nhập tối thiểu 4 ký tự"
+                                style="width: 100%; padding: 14px 15px 14px 45px; border-radius: 14px; border: 1.5px solid #e2e8f0; outline: none; font-size: 14px; transition: all 0.2s; background: #f8fafc;">
+                            <i class="fa-solid fa-lock"
+                                style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 16px;"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label
+                            style="font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: block;">XÁC
+                            NHẬN MẬT KHẨU</label>
+                        <div style="position: relative;">
+                            <input type="password" id="own-confirm-pass" placeholder="Nhập lại mật khẩu mới"
+                                style="width: 100%; padding: 14px 15px 14px 45px; border-radius: 14px; border: 1.5px solid #e2e8f0; outline: none; font-size: 14px; transition: all 0.2s; background: #f8fafc;">
+                            <i class="fa-solid fa-shield-check"
+                                style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--c-green); font-size: 16px;"></i>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary"
+                        style="width: 100%; height: 50px; border-radius: 16px; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);"
+                        onclick="submitOwnPasswordChange()">
+                        <i class="fa-solid fa-circle-check"></i> CẬP NHẬT NGAY
                     </button>
                 </div>
             </div>
