@@ -1221,6 +1221,25 @@ function exportUsersToExcel() {
     if (roleFilter !== 'all') list = list.filter(u => u.role === roleFilter);
     if (classFilter !== 'all') list = list.filter(u => u.className === classFilter);
 
+    // Apply exact same sorting as on-screen rendering
+    if (adminUserSortActive) {
+        list.sort((a, b) => {
+            const nameA = (a.name || "").trim();
+            const nameB = (b.name || "").trim();
+            const partsA = nameA.split(/\s+/);
+            const partsB = nameB.split(/\s+/);
+            const tenA = partsA[partsA.length - 1];
+            const tenB = partsB[partsB.length - 1];
+            const cmpTen = tenA.localeCompare(tenB, 'vi', { sensitivity: 'base' });
+            if (cmpTen !== 0) return cmpTen;
+            const hoA = partsA.length > 1 ? partsA[0] : "";
+            const hoB = partsB.length > 1 ? partsB[0] : "";
+            const cmpHo = hoA.localeCompare(hoB, 'vi', { sensitivity: 'base' });
+            if (cmpHo !== 0) return cmpHo;
+            return nameA.localeCompare(nameB, 'vi', { sensitivity: 'base' });
+        });
+    }
+
     if (list.length === 0) {
         showToast("Không có dữ liệu để xuất!", "error");
         return;
