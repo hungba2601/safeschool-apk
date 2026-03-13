@@ -645,7 +645,16 @@ async function loadAdminTab(tab, btn = null) {
         area.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách học sinh...</div>';
         const res = await apiCall({ action: 'getUsers' });
         if (res && res.success) {
-            adminUsersCache = res.users;
+            // Sắp xếp mặc định theo tên tiếng Việt (Tên trước, Họ sau)
+            adminUsersCache = res.users.sort((a, b) => {
+                const nameA = (a.name || "").trim().split(" ");
+                const nameB = (b.name || "").trim().split(" ");
+                const firstA = nameA[nameA.length - 1].toLowerCase();
+                const firstB = nameB[nameB.length - 1].toLowerCase();
+                const cmp = firstA.localeCompare(firstB, 'vi');
+                if (cmp !== 0) return cmp;
+                return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase(), 'vi');
+            });
 
             // Lấy danh sách lớp duy nhất để tạo filter
             const classes = [...new Set(adminUsersCache.map(u => u.className).filter(c => c && c !== "---"))].sort();
@@ -1181,11 +1190,15 @@ function renderAdminUsers() {
 
 function sortAdminUsers() {
     adminUsersCache.sort((a, b) => {
-        const nameA = (a.name || "").toLowerCase();
-        const nameB = (b.name || "").toLowerCase();
-        return nameA.localeCompare(nameB, 'vi');
+        const nameA = (a.name || "").trim().split(" ");
+        const nameB = (b.name || "").trim().split(" ");
+        const firstA = nameA[nameA.length - 1].toLowerCase();
+        const firstB = nameB[nameB.length - 1].toLowerCase();
+        const cmp = firstA.localeCompare(firstB, 'vi');
+        if (cmp !== 0) return cmp;
+        return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase(), 'vi');
     });
-    showToast("Đã sắp xếp Theo tên A-Z", "success");
+    showToast("Đã sắp xếp Theo tên A-Z (ưu tiên Tên)", "success");
     renderAdminUsers();
 }
 
