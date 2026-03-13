@@ -11,6 +11,7 @@ let studentReportsCache = []; // Cache for chat history
 let currentAdminTab = 'reports'; // Global for admin navigation
 let isWebMode = false; // Toggle between Mobile and Web layout
 let adminUsersCache = []; // Store fetched users for filtering/sorting
+let adminUserSortActive = false; // Flag to keep track if sorting is requested
 
 // --- UI Utilities ---
 function showToast(message, type = 'success') {
@@ -1126,14 +1127,39 @@ function renderAdminUsers() {
 
     let filteredUsers = [...adminUsersCache];
 
-    // Lọc theo đối tượng
+    // 1. Lọc theo đối tượng
     if (roleFilter !== 'all') {
         filteredUsers = filteredUsers.filter(u => u.role === roleFilter);
     }
 
-    // Lọc theo lớp
+    // 2. Lọc theo lớp
     if (classFilter !== 'all') {
         filteredUsers = filteredUsers.filter(u => u.className === classFilter);
+    }
+
+    // 3. Sắp xếp (Chỉ sắp xếp trên danh sách đã lọc)
+    if (adminUserSortActive) {
+        filteredUsers.sort((a, b) => {
+            const partsA = (a.name || "").trim().split(/\s+/);
+            const partsB = (b.name || "").trim().split(/\s+/);
+
+            // Tên (từ cuối)
+            const tenA = partsA[partsA.length - 1].toLowerCase();
+            const tenB = partsB[partsB.length - 1].toLowerCase();
+            const cmpTen = tenA.localeCompare(tenB, 'vi');
+            if (cmpTen !== 0) return cmpTen;
+
+            // Họ (từ đầu)
+            const hoA = partsA.length > 1 ? partsA[0].toLowerCase() : "";
+            const hoB = partsB.length > 1 ? partsB[0].toLowerCase() : "";
+            const cmpHo = hoA.localeCompare(hoB, 'vi');
+            if (cmpHo !== 0) return cmpHo;
+
+            // Chữ lót (phần ở giữa)
+            const lotA = partsA.slice(1, -1).join(" ").toLowerCase();
+            const lotB = partsB.slice(1, -1).join(" ").toLowerCase();
+            return lotA.localeCompare(lotB, 'vi');
+        });
     }
 
     if (filteredUsers.length === 0) {
@@ -1189,16 +1215,8 @@ function renderAdminUsers() {
 }
 
 function sortAdminUsers() {
-    adminUsersCache.sort((a, b) => {
-        const nameA = (a.name || "").trim().split(" ");
-        const nameB = (b.name || "").trim().split(" ");
-        const firstA = nameA[nameA.length - 1].toLowerCase();
-        const firstB = nameB[nameB.length - 1].toLowerCase();
-        const cmp = firstA.localeCompare(firstB, 'vi');
-        if (cmp !== 0) return cmp;
-        return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase(), 'vi');
-    });
-    showToast("Đã sắp xếp Theo tên A-Z (ưu tiên Tên)", "success");
+    adminUserSortActive = true;
+    showToast("Đã sắp xếp danh sách đang hiển thị (A-Z)", "success");
     renderAdminUsers();
 }
 
