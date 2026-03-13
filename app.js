@@ -348,11 +348,11 @@ function previewFile() {
 
             previewContainer.classList.remove('hidden');
             if (file.type.startsWith('image/')) {
-                previewContainer.innerHTML = `< img src = "${e.target.result}" > <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
+                previewContainer.innerHTML = `<img src="${e.target.result}"> <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
             } else if (file.type.startsWith('video/')) {
-                previewContainer.innerHTML = `< video src = "${e.target.result}" ></video > <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
+                previewContainer.innerHTML = `<video src="${e.target.result}"></video> <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
             } else {
-                previewContainer.innerHTML = `< i class="fa-solid fa-file" style = "font-size:24px; color:var(--primary); margin:13px;" ></i > <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
+                previewContainer.innerHTML = `<i class="fa-solid fa-file" style="font-size:24px; color:var(--primary); margin:13px;"></i> <i class="fa-solid fa-xmark remove-file" onclick="clearFilePreview()"></i>`;
             }
         };
         reader.readAsDataURL(file);
@@ -389,7 +389,7 @@ async function openSOSModal() {
             let adminHtml = '';
             res.admins.forEach(admin => {
                 adminHtml += `
-                    < div style = "display:flex; justify-content:space-between; align-items:center; padding: 12px; border-bottom: 1px solid #eee;" >
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px; border-bottom: 1px solid #eee;">
                         <div>
                             <div style="font-weight:600; font-size:14px; color:black;">${admin.name}</div>
                             <div style="color:var(--text-muted); font-size:12px;">SĐT: ${admin.phone}</div>
@@ -397,7 +397,7 @@ async function openSOSModal() {
                         <a href="tel:${admin.phone}" class="btn" style="width:auto; padding:5px 15px; font-size:12px; background:var(--c-green); color:white; border-radius:30px; text-decoration:none;">
                             <i class="fa-solid fa-phone"></i> Gọi ngay
                         </a>
-                    </div >
+                    </div>
                     `;
             });
             adminListContainer.innerHTML = adminHtml || '<p style="font-size:12px; color:red; padding:10px;">Chưa có thông tin Admin liên hệ.</p>';
@@ -442,9 +442,9 @@ function openChatModal() {
 function loadChatHistory() {
     const chatBox = document.getElementById('chat-box');
     chatBox.innerHTML = `
-                    < div class="chat-message admin-msg" >
+                    <div class="chat-message admin-msg">
                         <div class="msg-bubble">Chào bạn, bạn muốn tâm sự hay hỏi đáp gì không? Thông tin của bạn được bảo mật.</div>
-        </div >
+                    </div>
                     `;
 
     // Filter and display chat history
@@ -452,15 +452,15 @@ function loadChatHistory() {
     // Result is reversed (newest first), we want oldest first for chat flow
     [...chats].reverse().forEach(c => {
         chatBox.innerHTML += `
-                    < div class="chat-message user-msg" >
+                    <div class="chat-message user-msg">
                         <div class="msg-bubble">${c.content}</div>
-            </div >
+                    </div>
                     `;
         if (c.details && c.status === 'Đã xử lý') {
             chatBox.innerHTML += `
-                    < div class="chat-message admin-msg" >
+                    <div class="chat-message admin-msg">
                         <div class="msg-bubble">${c.details}</div>
-                </div >
+                    </div>
                     `;
         }
     });
@@ -475,9 +475,9 @@ function sendChat() {
 
     const chatBox = document.getElementById('chat-box');
     chatBox.innerHTML += `
-                    < div class="chat-message user-msg" >
+                    <div class="chat-message user-msg">
                         <div class="msg-bubble">${msg}</div>
-        </div >
+                    </div>
                     `;
     input.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -499,9 +499,9 @@ function sendChat() {
     // Auto reply
     setTimeout(() => {
         chatBox.innerHTML += `
-                    < div class="chat-message admin-msg" >
+                    <div class="chat-message admin-msg">
                         <div class="msg-bubble">Quản trị viên đã nhận được tin nhắn. Phản hồi sẽ hiển thị ở bảng "Báo cáo gần đây".</div>
-            </div >
+                    </div>
                     `;
         chatBox.scrollTop = chatBox.scrollHeight;
     }, 1000);
@@ -1338,7 +1338,7 @@ async function uploadUserList(event) {
             hideLoader();
 
             if (res && res.success) {
-                statusDiv.innerHTML = `< i class="fa-solid fa-check-circle" ></i > ${res.message} `;
+                statusDiv.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${res.message}`;
                 statusDiv.style.color = 'var(--c-green)';
                 showToast(res.message, "success");
             } else {
@@ -1357,7 +1357,7 @@ async function uploadUserList(event) {
 
 // --- Push Notification Subscription Logic ---
 // Thay VAPID_PUBLIC_KEY bằng key thật từ Firebase Console (Cloud Messaging -> Web Configuration)
-const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
+const VAPID_PUBLIC_KEY = 'BJr-M1iYXdROpF2_4uS8HoR4LFPnx8Aw0l8GJaGIz250NjcrdNMzAvSZhk3ug0tOi2XsdKMA9833TWiZCSGGvWk';
 
 async function initPushNotifications() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
