@@ -122,7 +122,7 @@ async function login() {
 
     if (res && res.success) {
         showToast("Đăng nhập thành công!", "success");
-        currentUser = username;
+        currentUser = username.toLowerCase().trim();
         currentRole = role;
 
         // Khởi tạo thông báo đẩy
@@ -377,35 +377,32 @@ function clearFilePreview() {
 // --- SOS Features ---
 // --- SOS Features ---
 async function openSOSModal() {
-    // Mở modal ngay lập tức để người dùng thấy phản hồi
     const adminListContainer = document.getElementById('admin-list-sos');
-    adminListContainer.innerHTML = '<div style="text-align:center; padding:15px; font-size:12px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách Admin...</div>';
+    adminListContainer.innerHTML = '<div style="text-align:center; padding:15px; font-size:13px; color:#666;"><i class="fa-solid fa-circle-notch fa-spin"></i> Đang tải dữ liệu admin...</div>';
     openModal('sos-modal');
 
-    // Tải dữ liệu admin trong nền
     try {
         const res = await apiCall({ action: 'getAdmins' });
         if (res && res.success) {
-            let adminHtml = '';
+            let html = '';
             res.admins.forEach(admin => {
-                adminHtml += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px; border-bottom: 1px solid #eee;">
-                        <div>
-                            <div style="font-weight:600; font-size:14px; color:black;">${admin.name}</div>
-                            <div style="color:var(--text-muted); font-size:12px;">SĐT: ${admin.phone}</div>
-                        </div>
-                        <a href="tel:${admin.phone}" class="btn" style="width:auto; padding:5px 15px; font-size:12px; background:var(--c-green); color:white; border-radius:30px; text-decoration:none;">
-                            <i class="fa-solid fa-phone"></i> Gọi ngay
-                        </a>
+                html += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #f1f5f9;">
+                    <div style="flex:1;">
+                        <div style="font-weight:600; font-size:14px; color:#1e293b;">${admin.name}</div>
+                        <div style="color:#64748b; font-size:12px; margin-top:2px;">SĐT: ${admin.phone}</div>
                     </div>
-                    `;
+                    <a href="tel:${admin.phone}" style="background:#10b981; color:white; padding:8px 16px; border-radius:20px; text-decoration:none; font-size:12px; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+                        <i class="fa-solid fa-phone"></i> Gọi ngay
+                    </a>
+                </div>`;
             });
-            adminListContainer.innerHTML = adminHtml || '<p style="font-size:12px; color:red; padding:10px;">Chưa có thông tin Admin liên hệ.</p>';
+            adminListContainer.innerHTML = html || '<div style="padding:15px; text-align:center; color:#ef4444; font-size:13px;">Chưa có thông tin liên hệ.</div>';
         } else {
-            adminListContainer.innerHTML = '<p style="font-size:12px; color:red; padding:10px;">Không thể tải danh sách liên hệ.</p>';
+            adminListContainer.innerHTML = '<div style="padding:15px; text-align:center; color:#ef4444; font-size:13px;">Lỗi: Không thể tải danh sách.</div>';
         }
     } catch (err) {
-        adminListContainer.innerHTML = '<p style="font-size:12px; color:red; padding:10px;">Lỗi kết nối máy chủ.</p>';
+        adminListContainer.innerHTML = '<div style="padding:15px; text-align:center; color:#ef4444; font-size:13px;">Lỗi kết nối máy chủ.</div>';
     }
 }
 
