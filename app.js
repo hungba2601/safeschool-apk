@@ -125,6 +125,9 @@ async function login() {
         currentUser = username;
         currentRole = role;
 
+        // Khởi tạo thông báo đẩy
+        initPushNotifications();
+
         if (role === 'student') {
             document.getElementById('student-name').textContent = username;
 
@@ -1350,4 +1353,64 @@ async function uploadUserList(event) {
         event.target.value = ''; // Reset input
     };
     reader.readAsArrayBuffer(file);
+}
+
+// --- Push Notification Subscription Logic ---
+// Thay VAPID_PUBLIC_KEY bằng key thật từ Firebase Console (Cloud Messaging -> Web Configuration)
+const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
+
+async function initPushNotifications() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.warn('Trình duyệt không hỗ trợ Push Notifications.');
+        return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+        // Nếu chưa đăng ký, tiến hành đăng ký mới
+        subscription = await subscribeUser(registration);
+    }
+
+    if (subscription) {
+        // Gửi thông tin đăng ký lên Google Sheets (Code.gs)
+        await apiCall({
+            action: 'subscribePush',
+            subscription: JSON.stringify(subscription),
+            username: currentUser
+        });
+    }
+}
+
+async function subscribeUser(registration) {
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            console.warn('Người dùng từ chối nhận thông báo.');
+            return null;
+        }
+
+        const subscribeOptions = {
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        };
+
+        return await registration.pushManager.subscribe(subscribeOptions);
+    } catch (error) {
+        console.error('Lỗi khi đăng ký Push:', error);
+        return null;
+    }
+}
+
+function urlBase64ToUint8Array(base64String) {
+    if (base64String === 'YOUR_VAPID_PUBLIC_KEY_HERE') return null;
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
