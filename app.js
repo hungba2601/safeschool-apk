@@ -646,16 +646,8 @@ async function loadAdminTab(tab, btn = null) {
         area.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách học sinh...</div>';
         const res = await apiCall({ action: 'getUsers' });
         if (res && res.success) {
-            // Sắp xếp mặc định theo tên tiếng Việt (Tên trước, Họ sau)
-            adminUsersCache = res.users.sort((a, b) => {
-                const nameA = (a.name || "").trim().split(" ");
-                const nameB = (b.name || "").trim().split(" ");
-                const firstA = nameA[nameA.length - 1].toLowerCase();
-                const firstB = nameB[nameB.length - 1].toLowerCase();
-                const cmp = firstA.localeCompare(firstB, 'vi');
-                if (cmp !== 0) return cmp;
-                return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase(), 'vi');
-            });
+            adminUsersCache = res.users;
+            adminUserSortActive = false; // Reset trạng thái sắp xếp khi mới vào tab
 
             // Lấy danh sách lớp duy nhất để tạo filter
             const classes = [...new Set(adminUsersCache.map(u => u.className).filter(c => c && c !== "---"))].sort();
@@ -1137,28 +1129,29 @@ function renderAdminUsers() {
         filteredUsers = filteredUsers.filter(u => u.className === classFilter);
     }
 
-    // 3. Sắp xếp (Chỉ sắp xếp trên danh sách đã lọc)
+    // 3. Sắp xếp nếu có yêu cầu (Ưu tiên Tên -> Họ -> Lót)
     if (adminUserSortActive) {
         filteredUsers.sort((a, b) => {
-            const partsA = (a.name || "").trim().split(/\s+/);
-            const partsB = (b.name || "").trim().split(/\s+/);
+            const nameA = (a.name || "").trim();
+            const nameB = (b.name || "").trim();
 
-            // Tên (từ cuối)
-            const tenA = partsA[partsA.length - 1].toLowerCase();
-            const tenB = partsB[partsB.length - 1].toLowerCase();
-            const cmpTen = tenA.localeCompare(tenB, 'vi');
+            const partsA = nameA.split(/\s+/);
+            const partsB = nameB.split(/\s+/);
+
+            // Lấy Tên (từ cuối cùng)
+            const tenA = partsA[partsA.length - 1];
+            const tenB = partsB[partsB.length - 1];
+            const cmpTen = tenA.localeCompare(tenB, 'vi', { sensitivity: 'base' });
             if (cmpTen !== 0) return cmpTen;
 
-            // Họ (từ đầu)
-            const hoA = partsA.length > 1 ? partsA[0].toLowerCase() : "";
-            const hoB = partsB.length > 1 ? partsB[0].toLowerCase() : "";
-            const cmpHo = hoA.localeCompare(hoB, 'vi');
+            // Nếu trùng tên, xét đến Họ (từ đầu tiên)
+            const hoA = partsA.length > 1 ? partsA[0] : "";
+            const hoB = partsB.length > 1 ? partsB[0] : "";
+            const cmpHo = hoA.localeCompare(hoB, 'vi', { sensitivity: 'base' });
             if (cmpHo !== 0) return cmpHo;
 
-            // Chữ lót (phần ở giữa)
-            const lotA = partsA.slice(1, -1).join(" ").toLowerCase();
-            const lotB = partsB.slice(1, -1).join(" ").toLowerCase();
-            return lotA.localeCompare(lotB, 'vi');
+            // Cuối cùng xét đến Chữ lót
+            return nameA.localeCompare(nameB, 'vi', { sensitivity: 'base' });
         });
     }
 
