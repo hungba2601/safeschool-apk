@@ -429,6 +429,44 @@ strong {
     color: white;
 }
 
+/* Header Action Icons */
+.btn-icon-head {
+    background: transparent;
+    border: none;
+    width: auto;
+    height: 40px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    /* To lên một chút */
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-head.color-yellow {
+    background: transparent;
+    /* Bỏ viền hình vuông */
+    color: #f59e0b;
+    /* Màu vàng đậm */
+    border: none;
+}
+
+.btn-icon-head.color-yellow-admin {
+    background: transparent;
+    /* Bỏ viền hình vuông */
+    color: #fbbf24;
+    /* Màu vàng sáng rõ trên nền xanh */
+    border: none;
+}
+
+.btn-icon-head:hover {
+    transform: scale(1.15);
+    /* Phóng to nhẹ khi di chuột */
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
 /* Mini Action Buttons for Tables */
 .btn-action-mini {
     width: 32px;
@@ -667,6 +705,11 @@ strong {
     to {
         transform: translateY(0);
     }
+}
+
+#custom-confirm {
+    z-index: 2000;
+    /* Đảm bảo nằm trên các modal khác và cả toast/loader */
 }
 
 .modal-header {
