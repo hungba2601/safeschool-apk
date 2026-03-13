@@ -101,7 +101,13 @@
                         <strong id="student-name">Học sinh</strong>
                     </div>
                 </div>
-                <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="btn-icon-head color-yellow" onclick="openOwnPasswordModal()" title="Đổi mật khẩu">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                    <button class="btn-logout" onclick="logout()"><i
+                            class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
             </header>
 
             <div class="dashboard-content">
@@ -180,6 +186,10 @@
                         title="Chuyển chế độ xem">
                         <i class="fa-solid fa-desktop"></i>
                     </button>
+                    <button class="btn-icon-head color-yellow-admin" onclick="openOwnPasswordModal()"
+                        title="Đổi mật khẩu">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
                     <button class="btn-logout" onclick="logout()"><i
                             class="fa-solid fa-right-from-bracket"></i></button>
                 </div>
@@ -220,12 +230,7 @@
                         <span>THÊM TÀI KHOẢN ĐĂNG KÝ</span>
                         <i class="fa-solid fa-chevron-right arrow"></i>
                     </div>
-                    <div class="admin-menu-item" onclick="openOwnPasswordModal()">
-                        <div class="icon-wrap" style="background: var(--c-yellow);"><i class="fa-solid fa-key"></i>
-                        </div>
-                        <span>ĐỔI MẬT KHẨU CỦA BẠN</span>
-                        <i class="fa-solid fa-chevron-right arrow"></i>
-                    </div>
+
 
                     <div class="admin-menu-item" onclick="loadAdminTab('stats')"
                         style="border-top: 2px solid #eee; margin-top: 10px; padding-top: 15px;">
