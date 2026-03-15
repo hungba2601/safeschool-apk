@@ -126,6 +126,12 @@ async function login() {
         currentUser = username.toLowerCase().trim();
         currentRole = role;
 
+        // Lưu thông tin đăng nhập để tự động điền và duy trì phiên
+        localStorage.setItem('saved_username', username);
+        localStorage.setItem('saved_password', password);
+        localStorage.setItem('saved_role', role);
+        localStorage.setItem('is_logged_in', 'true');
+
         // Khởi tạo thông báo đẩy
         initPushNotifications();
 
@@ -191,6 +197,9 @@ async function register() {
 function logout() {
     currentUser = null;
     currentRole = 'student';
+    // Xóa trạng thái đăng nhập nhưng giữ tài khoản/mật khẩu để điền sẵn
+    localStorage.removeItem('is_logged_in');
+
     // Reset view mode if needed
     if (isWebMode) toggleViewMode();
     switchScreen('login-screen');
@@ -1503,3 +1512,29 @@ async function submitOwnPasswordChange() {
         }
     });
 }
+// --- App Initialization ---
+function initApp() {
+    const savedUsername = localStorage.getItem('saved_username');
+    const savedPassword = localStorage.getItem('saved_password');
+    const savedRole = localStorage.getItem('saved_role');
+    const isLoggedIn = localStorage.getItem('is_logged_in');
+
+    // Điền sẵn thông tin nếu có
+    if (savedUsername) document.getElementById('username').value = savedUsername;
+    if (savedPassword) document.getElementById('password').value = savedPassword;
+    if (savedRole) {
+        const roleRadio = document.querySelector(`input[name="role"][value="${savedRole}"]`);
+        if (roleRadio) {
+            roleRadio.checked = true;
+            toggleRegisterBtn();
+        }
+    }
+
+    // Tự động đăng nhập nếu trạng thái là đang đăng nhập
+    if (isLoggedIn === 'true' && savedUsername && savedPassword && savedRole) {
+        login();
+    }
+}
+
+// Chạy khởi tạo khi trang tải xong
+document.addEventListener('DOMContentLoaded', initApp);
