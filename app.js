@@ -1537,4 +1537,49 @@ function initApp() {
 }
 
 // Chạy khởi tạo khi trang tải xong
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    
+    // PWA - Show install button for iOS if not installed
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    
+    if (isIOS && !isStandalone) {
+        const installBtn = document.getElementById('btn-install-app');
+        if (installBtn) {
+            installBtn.classList.remove('hidden');
+        }
+    }
+});
+
+// --- PWA Installation Logic ---
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const installBtn = document.getElementById('btn-install-app');
+    if (installBtn) {
+        installBtn.classList.remove('hidden');
+    }
+});
+
+function handleInstallApp() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+    if (isIOS) {
+        customConfirm("Để cài đặt trên iOS (iPhone/iPad):\n1. Mở ứng dụng bằng Safari\n2. Nhấn biểu tượng Chia sẻ (Share) ở thanh dưới cùng\n3. Chọn 'Thêm vào MH chính' (Add to Home Screen).", null);
+        return;
+    }
+
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                document.getElementById('btn-install-app').classList.add('hidden');
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        showToast("Thiết bị chưa hỗ trợ cài đặt hoặc app đã được cài đặt.", "info");
+    }
+}
