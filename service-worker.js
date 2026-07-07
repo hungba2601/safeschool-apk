@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hdat-cache-v1';
+const CACHE_NAME = 'hdat-cache-v2'; // Tăng version để xóa cache cũ của người dùng
 const urlsToCache = [
     './',
     './index.html',
@@ -30,13 +30,26 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // Bỏ qua các request gọi API POST hoặc khác GET
+    if (event.request.method !== 'GET') return;
+
     event.respondWith(
-        caches.match(event.request)
+        // Chiến lược "Network First, fallback to Cache"
+        // Luôn ưu tiên tải file code mới nhất từ trên mạng về
+        fetch(event.request)
             .then(response => {
-                // Trả về từ cache nếu có, không thì fetch từ mạng
-                return response || fetch(event.request).catch(() => {
-                    // Fallback khi offline hoàn toàn
-                    return caches.match('./index.html');
+                // Nếu tải thành công, lưu một bản copy vào cache để dùng khi mất mạng
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, responseClone);
+                });
+                return response;
+            })
+            .catch(() => {
+                // Nếu mất mạng (offline), tiến hành lấy file từ cache đã lưu
+                return caches.match(event.request).then(response => {
+                    // Fallback trả về index.html nếu không tìm thấy file
+                    return response || caches.match('./index.html');
                 });
             })
     );
