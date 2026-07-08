@@ -33,11 +33,11 @@
 <body>
     <div id="app" class="app-container">
         <!-- Zalo Warning Overlay -->
-        <div id="zalo-warning" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 30px; text-align: center;">
+        <div id="zalo-warning" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 30px; text-align: center;">
             <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 50px; color: var(--c-blue); margin-bottom: 20px; animation: bounce-up-right 2s infinite;"></i>
             <h2 style="margin-bottom: 15px; font-size: 22px; color: white;">Bạn đang mở bằng Zalo!</h2>
             <p style="font-size: 16px; line-height: 1.5; margin-bottom: 25px; color: #e2e8f0;">Để cài đặt Web App lên điện thoại, vui lòng nhấn vào biểu tượng <strong style="color: white; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 5px;">...</strong> ở góc trên bên phải màn hình và chọn:<br><br><strong style="color: var(--c-yellow); font-size: 18px; padding: 8px 15px; background: rgba(245, 158, 11, 0.2); border-radius: 10px; display: inline-block;">"Mở bằng trình duyệt"</strong></p>
-            <button class="btn btn-outline" onclick="document.getElementById('zalo-warning').classList.add('hidden')" style="width: auto; padding: 10px 30px; border-radius: 20px; color: white; border-color: rgba(255,255,255,0.3);">Đã hiểu, đóng lại</button>
+            <button class="btn btn-outline" onclick="document.getElementById('zalo-warning').classList.add('hidden'); document.getElementById('zalo-warning').classList.remove('active');" style="width: auto; padding: 10px 30px; border-radius: 20px; color: white; border-color: rgba(255,255,255,0.3);">Đã hiểu, đóng lại</button>
             <style>
                 @keyframes bounce-up-right {
                     0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(0); }
