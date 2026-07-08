@@ -1539,36 +1539,6 @@ function initApp() {
 // Chạy khởi tạo khi trang tải xong
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
-    
-    // Kiểm tra trình duyệt Zalo
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    const isZalo = ua.indexOf("Zalo") > -1 || ua.indexOf("zalo") > -1;
-    
-    if (isZalo) {
-        // Nếu là Zalo, hiện popup hướng dẫn mở bằng trình duyệt ngoài
-        const warningEl = document.getElementById('zalo-warning');
-        if (warningEl) {
-            warningEl.classList.remove('hidden');
-            warningEl.classList.add('active');
-        }
-        
-        // Hiện luôn nút cài đặt App, để khi user bấm vào sẽ hiện lại cảnh báo này
-        const installBtn = document.getElementById('btn-install-app');
-        if (installBtn) {
-            installBtn.classList.remove('hidden');
-        }
-    } else {
-        // PWA - Show install button for iOS if not installed
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-        
-        if (isIOS && !isStandalone) {
-            const installBtn = document.getElementById('btn-install-app');
-            if (installBtn) {
-                installBtn.classList.remove('hidden');
-            }
-        }
-    }
 });
 
 // --- PWA Installation Logic ---
@@ -1577,40 +1547,38 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const installBtn = document.getElementById('btn-install-app');
-    if (installBtn) {
-        installBtn.classList.remove('hidden');
-    }
 });
 
 function handleInstallApp() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    const isZalo = ua.indexOf("Zalo") > -1 || ua.indexOf("zalo") > -1;
-    
-    if (isZalo) {
-        const warningEl = document.getElementById('zalo-warning');
-        if (warningEl) {
-            warningEl.classList.remove('hidden');
-            warningEl.classList.add('active');
-        }
-        return;
-    }
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-    if (isIOS) {
-        customConfirm("Để cài đặt trên iOS (iPhone/iPad):\n1. Mở ứng dụng bằng Safari\n2. Nhấn biểu tượng Chia sẻ (Share) ở thanh dưới cùng\n3. Chọn 'Thêm vào MH chính' (Add to Home Screen).", null);
-        return;
-    }
-
     if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                document.getElementById('btn-install-app').classList.add('hidden');
-            }
             deferredPrompt = null;
         });
     } else {
-        showToast("Thiết bị chưa hỗ trợ cài đặt hoặc app đã được cài đặt.", "info");
+        const linkInput = document.getElementById('install-app-link');
+        if (linkInput) {
+            linkInput.value = window.location.href;
+        }
+        openModal('universal-install-modal');
+    }
+}
+
+function copyInstallLink() {
+    const linkInput = document.getElementById('install-app-link');
+    if (linkInput) {
+        linkInput.select();
+        linkInput.setSelectionRange(0, 99999); // For mobile devices
+        try {
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                showToast("Đã copy link thành công!", "success");
+            }).catch(err => {
+                document.execCommand("copy");
+                showToast("Đã copy link thành công!", "success");
+            });
+        } catch (err) {
+            document.execCommand("copy");
+            showToast("Đã copy link thành công!", "success");
+        }
     }
 }
